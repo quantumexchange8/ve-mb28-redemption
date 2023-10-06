@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RedemptionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('index');
+});
+
+Route::controller(RedemptionController::class)->group(function () {
+
+    Route::post('/redeem_code', 'redeemCode')->name('redeem_code');
+
 });

@@ -4,61 +4,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Redemption - VE-MB28</title>
+    <title>Code Redemption - VE-MB28-Redemption</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/pages/auth.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-<div id="auth">
-
-    <div class="row h-100">
-        <div id="auth-left">
-            <div class="auth-logo">
-                <a href="index.html"><img src="assets/images/logo/logo.png" alt="Logo"></a>
-            </div>
-            <h1 class="auth-title">Log in.</h1>
-            <p class="auth-subtitle mb-5">Log in with your data that you entered during registration.</p>
-
+<div id="auth" class="d-flex justify-content-center" style="background-color:#e6f3ff;" >
+    <div class="p-4">
+        <div >
+            <h1 class="auth-title">VE-MB28-Redemption</h1>
+            <p class="auth-subtitle mb-5">Enter your redemption code and email below to redeem it.</p>
             <div class="card">
                 <div class="card-body">
-                    <form action="index.html">
-                        <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="text" class="form-control form-control-xl" placeholder="Username">
+                    <h2 class="card-title mb-3" id="test">Code Redemption Form</h2>
+                    <form action="{{ route('redeem_code') }}" method="POST" id="redemption-form">
+                        @csrf
+                        <div class="form-group position-relative has-icon-left" id="test2">
+                            <input type="text" class="form-control form-control-xl redemption_code" name="redemption_code" id="redemption_code" placeholder="Redemption Code">
                             <div class="form-control-icon">
-                                <i class="bi bi-person"></i>
+                                <i class="bi bi-gift"></i>
                             </div>
                         </div>
-                        <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="password" class="form-control form-control-xl" placeholder="Password">
+                        <span class="redemption_code_error text-danger mb-2"></span>
+                        <div class="form-group position-relative has-icon-left mt-4">
+                            <input type="text" class="form-control form-control-xl email" name="email" id="email" placeholder="Email">
                             <div class="form-control-icon">
-                                <i class="bi bi-shield-lock"></i>
+                                <i class="bi bi-envelope"></i>
                             </div>
                         </div>
-                        <div class="form-check form-check-lg d-flex align-items-end">
-                            <input class="form-check-input me-2" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label text-gray-600" for="flexCheckDefault">
-                                Keep me logged in
-                            </label>
-                        </div>
-                        <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>
+                        <span class="email_error text-danger mb-2"></span>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5" id="test3">Submit</button>
                     </form>
                 </div>
             </div>
 
-            <div class="text-center mt-5 text-lg fs-4">
-                <p class="text-gray-600">Don't have an account? <a href="auth-register.html"
-                                                                   class="font-bold">Sign
-                        up</a>.</p>
-                <p><a class="font-bold" href="auth-forgot-password.html">Forgot password?</a>.</p>
-            </div>
         </div>
     </div>
 
 </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#redemption-form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this)
+                $.ajax({
+                    method:$(this).attr('method'),
+                    url:$(this).attr('action'),
+                    data:new FormData(this),
+                    processData:false,
+                    dataType:'json',
+                    contentType:false,
+                    beforeSend:function (){
+                        form.find('span.error-text').text('');
+                    },
+                    success: function(data) {
+                        console.log(data)
+                        if(data.status === 0) {
+                            $.each(data.error, function (prefix, val){
+                                $('span.'+prefix+'_error').text(val[0]);
+                                $('.'+prefix).addClass('border-danger');
+                            });
+                        } else if (data.status == 2) {
+                            Swal.fire({
+                                text: data.msg,
+                                icon: 'error',
+                                showConfirmButton: false,
+                                showCloseButton: true,
+                                toast:true,
+                                target: document.getElementById('test'),
+                                position: 'top',
+                                customClass: {                      
+                                    container: 'position-relative'
+                                },
+                            }).then(function() {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                text: data.msg,
+                                icon: 'success',
+                                showConfirmButton: false,
+                                showCloseButton: true,
+                                toast:true,
+                                target: document.getElementById('test'),
+                                position: 'top',
+                                customClass: {                      
+                                    container: 'position-relative'
+                                },
+                            }).then(function() {
+                                location.reload();
+                            });
+                        }
+                    },
+                    error: function(error) {
+                        console.log(error)
+                        Swal.fire({
+                            title: 'Error!',
+                            text: "Something went wrong",
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            timer: 3000,
+                            timerProgressBar: false,
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
 </body>
 
 </html>

@@ -9,7 +9,13 @@ class Code extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'status', 'expired_date'
+    ];
+
     protected $casts = [
         'expired_date' => 'datetime',
     ];
+
+    
 }
