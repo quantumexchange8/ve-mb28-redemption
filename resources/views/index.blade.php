@@ -18,7 +18,7 @@
 <div id="auth" class="d-flex justify-content-center" style="background-color:#e6f3ff;" >
     <div class="p-4">
         <div >
-            <h1 class="auth-title">VE-MB28-Redemption</h1>
+            <h1 class="auth-title">VE MB28 Redemption</h1>
             <p class="auth-subtitle mb-5">Enter your redemption code and email below to redeem it.</p>
             <div class="card">
                 <div class="card-body">
