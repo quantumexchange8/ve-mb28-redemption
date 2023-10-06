@@ -51,11 +51,9 @@
 
     <script>
         $(document).ready(function() {
-            // const btn = document.getElementById('submitButton');
             $('#redemption-form').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this)
-                // btn.innerHTML = 'Button clicked';
                 $.ajax({
                     method:$(this).attr('method'),
                     url:$(this).attr('action'),
@@ -65,10 +63,12 @@
                     contentType:false,
                     beforeSend:function (){
                         form.find('span.error-text').text('');
+                        $('button#submitButton').prop('disabled', true).html('Loading');
                     },
                     success: function(data) {
                         console.log(data)
-                        if(data.status === 0) {
+                        $('button#submitButton').prop('disabled', false).html('Submit');
+                        if(data.status === 0) {     
                             $.each(data.error, function (prefix, val){
                                 $('span.'+prefix+'_error').text(val[0]);
                                 $('.'+prefix).addClass('border-danger');
