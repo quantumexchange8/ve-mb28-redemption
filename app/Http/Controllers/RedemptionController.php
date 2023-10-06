@@ -79,7 +79,9 @@ class RedemptionController extends Controller
 
             return response()->json([
                 'status' => 1,
-                'msg' => 'Code redemption successful. Please check your email for the serial number we sent. Serial Number : ' . $serial_number . '. Expire Date : ' . $expire_date,
+                'msg' => 'Code redemption successful.',
+                'msgSerial' => 'Serial Number : ' . $serial_number,
+                'msgDate' => 'Expire Date : ' . $expire_date,
             ]);
             
         }

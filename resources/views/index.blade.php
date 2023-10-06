@@ -39,7 +39,7 @@
                             </div>
                         </div>
                         <span class="email_error text-danger mb-2"></span>
-                        <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5" id="test3">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5" id="submitButton">Submit</button>
                     </form>
                 </div>
             </div>
@@ -51,9 +51,11 @@
 
     <script>
         $(document).ready(function() {
+            // const btn = document.getElementById('submitButton');
             $('#redemption-form').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this)
+                // btn.innerHTML = 'Button clicked';
                 $.ajax({
                     method:$(this).attr('method'),
                     url:$(this).attr('action'),
@@ -73,7 +75,7 @@
                             });
                         } else if (data.status == 2) {
                             Swal.fire({
-                                text: data.msg,
+                                html: data.msg,
                                 icon: 'error',
                                 showConfirmButton: false,
                                 showCloseButton: true,
@@ -88,7 +90,7 @@
                             });
                         } else {
                             Swal.fire({
-                                text: data.msg,
+                                html: data.msg + '<br/>' + data.msgSerial + '<br/>' + data.msgDate,
                                 icon: 'success',
                                 showConfirmButton: false,
                                 showCloseButton: true,
@@ -107,7 +109,7 @@
                         console.log(error)
                         Swal.fire({
                             title: 'Error!',
-                            text: "Something went wrong",
+                            html: "Something went wrong",
                             icon: 'error',
                             confirmButtonText: 'OK',
                             timerProgressBar: false,
