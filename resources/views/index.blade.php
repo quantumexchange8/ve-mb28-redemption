@@ -110,7 +110,6 @@
                             text: "Something went wrong",
                             icon: 'error',
                             confirmButtonText: 'OK',
-                            timer: 3000,
                             timerProgressBar: false,
                         });
                     }
