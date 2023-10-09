@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<div id="auth" class="d-flex justify-content-center" style="background-color:#e6f3ff;" >
+<div id="auth" class="d-sm-flex justify-content-center" style="background-color:#e6f3ff;" >
     <div class="p-4">
         <div >
             <h1 class="auth-title">VE MB28 Redemption</h1>
