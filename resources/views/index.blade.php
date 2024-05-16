@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Redemption - VE-MB28-Redemption</title>
+    <title>Code Redemption</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/bootstrap-icons/bootstrap-icons.css') }}">
@@ -18,7 +18,7 @@
 <div id="auth" class="d-sm-flex justify-content-center" style="background-color:#e6f3ff;" >
     <div class="p-4">
         <div >
-            <h1 class="auth-title">VE MB28 Redemption</h1>
+            <h1 class="auth-title">Redemption</h1>
             <p class="auth-subtitle mb-5">Enter your redemption code and email below to redeem it.</p>
             <div class="card">
                 <div class="card-body">
@@ -66,9 +66,8 @@
                         $('button#submitButton').prop('disabled', true).html('Loading');
                     },
                     success: function(data) {
-                        console.log(data)
                         $('button#submitButton').prop('disabled', false).html('Submit');
-                        if(data.status === 0) {     
+                        if(data.status === 0) {
                             $.each(data.error, function (prefix, val){
                                 $('span.'+prefix+'_error').text(val[0]);
                                 $('.'+prefix).addClass('border-danger');
@@ -82,7 +81,7 @@
                                 toast:true,
                                 target: document.getElementById('test'),
                                 position: 'top',
-                                customClass: {                      
+                                customClass: {
                                     container: 'position-relative'
                                 },
                             }).then(function() {
@@ -97,7 +96,7 @@
                                 toast:true,
                                 target: document.getElementById('test'),
                                 position: 'top',
-                                customClass: {                      
+                                customClass: {
                                     container: 'position-relative'
                                 },
                             }).then(function() {
