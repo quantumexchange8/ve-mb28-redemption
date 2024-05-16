@@ -32,7 +32,6 @@ class RedemptionController extends Controller
             $redemptionCode = $request->redemption_code;
             $email = $request->email;
 
-            // VE*Tradehall&lee nic@MB28_MBTrade_FiboR28#20240514
             $checker = Code::where('redemption_code', $redemptionCode)->first();
             $acc_name = empty($checker->acc_name) ? null : '&' . $checker->acc_name;
             $broker_name = empty($checker->broker_name) ? null : '*' . $checker->broker_name;
