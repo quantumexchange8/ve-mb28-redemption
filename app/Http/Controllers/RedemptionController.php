@@ -35,18 +35,55 @@ class RedemptionController extends Controller
             $checker = Code::where('redemption_code', $redemptionCode)->first();
             $acc_name = empty($checker->acc_name) ? null : '&' . $checker->acc_name;
             $broker_name = empty($checker->broker_name) ? null : '*' . $checker->broker_name;
-            $setting_license_name = empty($checker->setting_license_name) ? null : '@' . $checker->setting_license_name;
-            $setting_license = SettingLicense::find($checker->setting_license_id);
-            $expire_date = Carbon::now()->addYears($setting_license->valid_year);
+            $license_name = empty($checker->license_name) ? null : '@' . $checker->license_name;
 
-            $code2 = $redemptionCode . $broker_name . $acc_name . $setting_license_name . '#' . $expire_date->format('Ymd');
+            // Check license name, explode '_' and find the valid year in SettingLicense
+            $license_name = ltrim($license_name, '@');
+
+            // Split the license name by underscore
+            $license_parts = explode('_', $license_name);
+
+            // Initialize an array to store valid licenses
+            $valid_licenses = [];
+
+            // Iterate through each license part to validate
+            foreach ($license_parts as $part) {
+                $setting_license = SettingLicense::where('slug', $part)->first();
+
+                if ($setting_license) {
+                    // Valid license found
+                    $valid_licenses[] = $setting_license;
+                }
+            }
+
+            $expired_date = null;
+            $fibo_license = null;
+            $mb_license = null;
+
+            foreach ($valid_licenses as $license) {
+                if ($license->category === 'FIBO') {
+                    $fibo_license = $license;
+                } elseif ($license->category === 'MB') {
+                    $mb_license = $license;
+                }
+            }
+
+            if ($mb_license) {
+                // If there's an MB license, calculate the expired date based on its valid year
+                $expired_date = now()->addYears($mb_license->valid_year);
+            } elseif ($fibo_license) {
+                // If there's only a FIBO license, calculate the expired date based on its valid year
+                $expired_date = now()->addYears($fibo_license->valid_year);
+            }
+
+            $code2 = $redemptionCode . $broker_name . $acc_name . $license_name . '#' . $expired_date->format('Ymd');
             $serial_number = base64_encode($code2);
 
             $data = [
                 'email' => $email,
                 'serial_number' => $serial_number,
-                'expire_date' => $expire_date->format('Y-m-d'),
-                'title' => 'VE-MB28-Redemption'
+                'expire_date' => $expired_date->format('Y-m-d'),
+                'title' => 'VE-MB28-Redemption',
             ];
 
             if (empty($checker)){
@@ -57,7 +94,7 @@ class RedemptionController extends Controller
             } elseif ($checker->status == 'valid') {
                 $checker->update([
                     'status' => 'redeemed',
-                    'expired_date' => $expire_date->format('Y-m-d'),
+                    'expired_date' => $expired_date->format('Y-m-d'),
                 ]);
             } elseif ($checker->status == 'redeemed') {
                 return response()->json([
@@ -72,7 +109,7 @@ class RedemptionController extends Controller
                 ]);
             }
 
-            Mail::send('emails', ['data1' => $data], function ($message) use ($data) {
+            Mail::send('emails', ['data1' => $data, 'licenses' => $valid_licenses], function ($message) use ($data) {
                 $message->to($data['email'])
                     ->subject($data['title']);
             });
@@ -86,7 +123,7 @@ class RedemptionController extends Controller
                 'status' => 1,
                 'msg' => 'Code redemption successful.',
                 'msgSerial' => 'Serial Number : ' . $serial_number,
-                'msgDate' => 'Expire Date : ' . $expire_date->format('Y-m-d'),
+                'msgDate' => 'Expire Date : ' . $expired_date->format('Y-m-d'),
             ]);
 
         }

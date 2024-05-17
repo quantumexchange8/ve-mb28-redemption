@@ -10,6 +10,9 @@ return new class extends Migration {
         Schema::create('codes', function (Blueprint $table) {
             $table->id();
             $table->string('redemption_code');
+            $table->string('acc_name')->nullable();
+            $table->string('broker_name')->nullable();
+            $table->string('license_name')->nullable();
             $table->date('expired_date')->nullable();
             $table->string('status')->default('valid');
             $table->timestamps();

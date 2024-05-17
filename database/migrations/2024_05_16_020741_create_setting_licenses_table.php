@@ -10,7 +10,9 @@ return new class extends Migration {
         Schema::create('setting_licenses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug');
             $table->string('category');
+            $table->string('url')->nullable();
             $table->integer('valid_year');
             $table->softDeletes();
             $table->timestamps();
