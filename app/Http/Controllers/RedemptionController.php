@@ -35,12 +35,8 @@ class RedemptionController extends Controller
             $checker = Code::where('redemption_code', $redemptionCode)->first();
             $acc_name = empty($checker->acc_name) ? null : '&' . $checker->acc_name;
             $broker_name = empty($checker->broker_name) ? null : '*' . $checker->broker_name;
-            $license_name = empty($checker->license_name) ? null : '@' . $checker->license_name;
+            $license_name = $checker->license_name ?? null;
 
-            // Check license name, explode '_' and find the valid year in SettingLicense
-            $license_name = ltrim($license_name, '@');
-
-            // Split the license name by underscore
             $license_parts = explode('_', $license_name);
 
             // Initialize an array to store valid licenses
@@ -76,6 +72,9 @@ class RedemptionController extends Controller
                 $expired_date = now()->addYears($fibo_license->valid_year);
             }
 
+            // Prepend '@' to the license name before using it in the final code
+            $license_name = '@' . $license_name;
+
             $code2 = $redemptionCode . $broker_name . $acc_name . $license_name . '#' . $expired_date->format('Ymd');
             $serial_number = base64_encode($code2);
 
@@ -83,7 +82,7 @@ class RedemptionController extends Controller
                 'email' => $email,
                 'serial_number' => $serial_number,
                 'expire_date' => $expired_date->format('Y-m-d'),
-                'title' => 'VE-MB28-Redemption',
+                'title' => 'Redemption',
             ];
 
             if (empty($checker)){
